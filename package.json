@@ -9,7 +9,7 @@
     "test": "npm run babel && mocha dist/**/*.test.js"
   },
   "author": "Tyson Hester",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "babel": "^6.23.0",
     "babel-cli": "^6.23.0",
