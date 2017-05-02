@@ -2,23 +2,21 @@
 
 A redux state manager for async tasks and checks. A **task** is a unit of async work that should only be run under certain conditions or in certains ways. A **check** is two tasks, one for the work and one to check if the work should done. Provides reducers and action creators to handle task state and to dispatch task or check actions.
 
-## Getting Started
-
-#### Prerequisites
+### Prerequisites
  - [redux](https://github.com/reactjs/redux)
  - [redux-thunk](https://github.com/gaearon/redux-thunk)
 
-#### Installing
+### Installing
 ```
 npm i redux-check-test -S
 ```
 
-#### Running the tests
+### Running the tests
 ```
 npm run test
 ```
 
-#### Usage
+### Usage
 ##### create a task reducer
 ```javascript
 import { createTaskReducer } from 'redux-check-task'
@@ -63,7 +61,7 @@ dispatch(createTaskAction({
 }))
 ```
  - `createTaskAction` is an action creator that needs two things:
-    - `stateKey` - the '.' delimited key that indicates how to find the task in state
+ - `stateKey` - the '.' delimited key that indicates how to find the task in state
     - `task` - a *function* that receives `dispatch` and `getState` from [redux-thunk](https://github.com/gaearon/redux-thunk) and **must** return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that resolves the results of the task
     - *options*
         - `onlyOnce` - bool indicating whether to perform the task more than one time (defaults to false)
@@ -85,7 +83,38 @@ dispatch(createCheckAction({
         - `autoPerformTask` - bool indicating whether to automatically perform the task if the check resolves true (defaults to true)
         - `taskOnlyOnce` - bool indicating whether to perform the task more than one time (defaults to false)
 
-#### get results
+##### task/check state
+task state
+```javascript
+{
+    ...state,
+    myWork: {
+        stateKey, // string containing the state key used to dispatch this task (will be 'myWork' in this case)
+        meta: {
+            performing, // bool indicating whether the task is currently in progress
+            complete, // bool indicating whether the task is finished
+            timing: {
+                started: // Date instance containing when the task was executed
+                duration: // number containing how long the task took in ms
+            }
+        },
+        results // the value resolved by the task
+    }
+}
+```
+check state
+```javascript
+{
+    ...state,
+    myWork: {
+        // both will be task reducers with state matching the above task structure
+        check, 
+        task
+    }
+}
+```
+
+##### accessing task results
 handle the complete action in a reducer
 ```javascript
 import {
@@ -135,7 +164,7 @@ dispatch(createTaskAction({
     task: (dispatch, getState) => Promise.resolve({ some: 'data' })
 }))
 ```
-**OR**
+**--- or ---**
 
 once a task or check action is dispatched it will return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) with results of the run:
 ```javascript
@@ -156,38 +185,7 @@ dispatch(createTaskAction({
 }) => {})
 ```
 
-#### task/check state
-task state
-```javascript
-{
-    ...state,
-    myWork: {
-        stateKey, // string containing the state key used to dispatch this task (will be 'myWork' in this case)
-        meta: {
-            performing, // bool indicating whether the task is currently in progress
-            complete, // bool indicating whether the task is finished
-            timing: {
-                started: // Date instance containing when the task was executed
-                duration: // number containing how long the task took in ms
-            }
-        },
-        results // the value resolved by the task
-    }
-}
-```
-check state
-```javascript
-{
-    ...state,
-    myWork: {
-        // both will be task reducers with state matching the above task structure
-        check, 
-        task
-    }
-}
-```
-
-#### License
+### License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
