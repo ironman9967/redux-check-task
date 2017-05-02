@@ -6,7 +6,8 @@
   "scripts": {
     "watch": "npm-watch",
     "babel": "rm -rf dist && babel src --ignore node_modules --copy-files --out-dir dist",
-    "test": "npm run babel && mocha dist/**/*.test.js"
+    "test": "npm run babel && mocha dist/**/*.test.js",
+    "ppp": "npm version patch && git push && npm publish"
   },
   "author": "Tyson Hester",
   "repository": {
