@@ -1,6 +1,6 @@
 # redux-check-task
 
-A redux state manager for async tasks and check tasks. A **task** is a unit of async work that should only be run under certain conditions or in certains ways. A **check** is two tasks, one for the work and one to check if the work should done. Provides reducers and action creators to handle state and dispatch task or check performances.
+A redux state manager for async tasks and checks. A **task** is a unit of async work that should only be run under certain conditions or in certains ways. A **check** is two tasks, one for the work and one to check if the work should done. Provides reducers and action creators to handle task state and to dispatch task or check actions.
 
 ## Getting Started
 
