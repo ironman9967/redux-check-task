@@ -9,6 +9,10 @@
     "test": "npm run babel && mocha dist/**/*.test.js"
   },
   "author": "Tyson Hester",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ironman9967/redux-check-task"
+  },
   "license": "MIT",
   "devDependencies": {
     "babel": "^6.23.0",
