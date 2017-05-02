@@ -63,7 +63,7 @@ dispatch(createTaskAction({
 }))
 ```
  - `createTaskAction` is an action creator that needs two things:
-    - `stateKey` - the '.' delimited key that indeicates how to find the task in state
+    - `stateKey` - the '.' delimited key that indicates how to find the task in state
     - `task` - a *function* that receives `dispatch` and `getState` from [redux-thunk](https://github.com/gaearon/redux-thunk) and **must** return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that resolves the results of the task
     - *options*
         - `onlyOnce` - bool indicating whether to perform the task more than one time (defaults to false)
