@@ -12,19 +12,17 @@ import {
 } from './index'
 
 describe('test', () => {
-    let dispatch, getState
-    beforeEach(() => {
-        const store = createStore(
+    it('should do a task', done => {
+        const {
+            dispatch,
+            getState
+        } = createStore(
             combineReducers({
-            aTask: createTaskReducer('aTask'),
-            aCheck: createCheckReducer('aCheck')
-        }),
+                aTask: createTaskReducer('aTask'),
+                aCheck: createCheckReducer('aCheck')
+            }),
             applyMiddleware(thunk)
         )
-        dispatch = store.dispatch
-        getState = store.getState
-    })
-    it('should do a task', done => {
         dispatch(createTaskAction({
             stateKey: 'aTask',
             task: (dispatch, getState) => 
@@ -58,6 +56,16 @@ describe('test', () => {
         })
     })
     it('should do the task if check resolves true', done => {
+        const {
+            dispatch,
+            getState
+        } = createStore(
+            combineReducers({
+                aTask: createTaskReducer('aTask'),
+                aCheck: createCheckReducer('aCheck')
+            }),
+            applyMiddleware(thunk)
+        )
         dispatch(createCheckAction({
             stateKey: 'aCheck',
             check: (dispatch, getTaskState) =>
@@ -81,6 +89,16 @@ describe('test', () => {
         })
     })
     it('should do the task if check resolves false', done => {
+        const {
+            dispatch,
+            getState
+        } = createStore(
+            combineReducers({
+                aTask: createTaskReducer('aTask'),
+                aCheck: createCheckReducer('aCheck')
+            }),
+            applyMiddleware(thunk)
+        )
         dispatch(createCheckAction({
             stateKey: 'aCheck',
             check: (dispatch, getTaskState) =>
@@ -102,5 +120,23 @@ describe('test', () => {
             expect(complete).to.be.false
             done()
         })
+    })
+    it('should default action and state so that reducers can be nested', () => {
+        const {
+            getState
+        } = createStore(
+            combineReducers({
+                app: (state = {
+                    aCheck: createCheckReducer('app.aCheck')()
+                }) => state
+            }),
+            applyMiddleware(thunk)
+        )
+        const {
+            app: {
+                aCheck
+            }
+        } = getState()
+        expect(aCheck).to.be.an.object
     })
 })

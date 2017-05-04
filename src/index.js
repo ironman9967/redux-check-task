@@ -13,6 +13,10 @@ export const createTaskReducer = stateKey => (state = {
     type,
     stateKey: actionStateKey,
     performance
+} = {
+    type,
+    actionStateKey,
+    performance
 }) => {
     const taskActionType = stateKey == actionStateKey ? type : void 0
     switch (taskActionType) {
