@@ -4,6 +4,8 @@ import {
     reduce
 } from 'lodash/fp'
 
+const getActionType = (stateKey, type) => `${stateKey}-${type}`
+
 export const createTaskReducer = stateKey => (state = {
     stateKey,
     meta: {
@@ -23,7 +25,7 @@ export const createTaskReducer = stateKey => (state = {
 }) => {
     const taskActionType = stateKey == actionStateKey ? type : void 0
     switch (taskActionType) {
-        case 'performing':
+        case getActionType(stateKey, 'performing'):
             return {
                 ...state,
                 meta: {
@@ -33,7 +35,7 @@ export const createTaskReducer = stateKey => (state = {
                 },
                 results: null
             }
-        case 'complete':
+        case getActionType(stateKey, 'complete'):
             const {
                 timing,
                 results
@@ -71,7 +73,7 @@ export const createTaskAction = ({
         },
         results: null
     }) => dispatch({
-        type,
+        type: getActionType(stateKey, type),
         stateKey,
         performance
     })
