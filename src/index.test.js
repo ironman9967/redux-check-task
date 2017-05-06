@@ -8,11 +8,13 @@ import {
     createTaskReducer,
     createCheckReducer,
     createTaskAction,
-    createCheckAction
+    createCheckAction,
+    createCheckForReducer,
+    createTaskForReducer
 } from './index'
 
 describe('test', () => {
-    it('should do a task', done => {
+    it('should do a task', () => {
         const {
             dispatch,
             getState
@@ -23,7 +25,7 @@ describe('test', () => {
             }),
             applyMiddleware(thunk)
         )
-        dispatch(createTaskAction({
+        return dispatch(createTaskAction({
             stateKey: 'aTask',
             task: (dispatch, getState) => 
                 new Promise(resolve => setTimeout(() => resolve({
@@ -52,10 +54,9 @@ describe('test', () => {
             expect(started).to.be.a('date')
             expect(duration).to.be.a('number')
             expect(some).to.be.equal('data')
-            done()
         })
     })
-    it('should do the task if check resolves true', done => {
+    it('should do the task if check resolves true', () => {
         const {
             dispatch,
             getState
@@ -66,7 +67,7 @@ describe('test', () => {
             }),
             applyMiddleware(thunk)
         )
-        dispatch(createCheckAction({
+        return dispatch(createCheckAction({
             stateKey: 'aCheck',
             check: (dispatch, getTaskState) =>
                 new Promise(resolve => setTimeout(() => resolve(true), 0)),
@@ -85,10 +86,9 @@ describe('test', () => {
                 }
             } = getState()
             expect(some).to.be.equal('data')
-            done()
         })
     })
-    it('should do the task if check resolves false', done => {
+    it('should do the task if check resolves false', () => {
         const {
             dispatch,
             getState
@@ -99,7 +99,7 @@ describe('test', () => {
             }),
             applyMiddleware(thunk)
         )
-        dispatch(createCheckAction({
+        return dispatch(createCheckAction({
             stateKey: 'aCheck',
             check: (dispatch, getTaskState) =>
                 new Promise(resolve => setTimeout(() => resolve(false), 0)),
@@ -118,7 +118,6 @@ describe('test', () => {
                 }
             } = getState()
             expect(complete).to.be.false
-            done()
         })
     })
     it('should default action and state so that reducers can be nested', () => {
@@ -138,5 +137,67 @@ describe('test', () => {
             }
         } = getState()
         expect(aCheck).to.be.an.object
+    })
+    it('should take a reducer name, a state key prefix and a task name and return a task reducer', () => {
+        const reducerName = 'test'
+        const stateKeyPrefix = 'reducerParent'
+        const taskName = 'aTestTask'
+        const testReducer = createTaskForReducer(reducerName)(stateKeyPrefix)(taskName)
+        const {
+            getState,
+            dispatch
+        } = createStore(
+            ({
+                reducerParent: {
+                    test
+                }
+            } = {
+                reducerParent: {
+                    test: testReducer()
+                }
+            }, action) => ({
+                reducerParent: {
+                    test: testReducer(test, action)
+                }
+            }),
+            applyMiddleware(thunk)
+        )
+        const reducerStateKey = `${stateKeyPrefix}.${reducerName}`
+        return dispatch(createTaskAction({
+            stateKey: reducerStateKey,
+            task: (dispatch, getState) => {
+                const {
+                    reducerParent: {
+                        test: {
+                            stateKey
+                        }
+                    }
+                } = getState()
+                expect(stateKey).to.be.equal(`${reducerStateKey}.${taskName}`)
+            }
+        }))
+    })
+    it('should take a reducer name and a task name and return a task reducer', () => {
+        const reducerName = 'test'
+        const taskName = 'aTestTask'
+        const testReducer = createTaskForReducer(reducerName)()(taskName)
+        const {
+            getState
+        } = createStore(
+            ({
+                test
+            } = {
+                test: testReducer()
+            }, action) => ({
+                test: testReducer(test, action)
+            }),
+            applyMiddleware(thunk)
+        )
+        const { 
+            test: {
+                stateKey
+            }
+        } = getState()
+        expect(stateKey).to.be.equal(`${reducerName}.${taskName}`)
     })
 })
