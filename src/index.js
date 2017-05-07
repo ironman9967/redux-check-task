@@ -6,6 +6,11 @@ import {
 
 const getActionType = (stateKey, type) => `${stateKey}-${type}`
 
+export const prefixStateKey = (stateKey, ...prefixes) => 
+    reduce((prefix, stateKey) => 
+        `${prefix && prefix.length > 0 ? `${prefix}.` : ``}${stateKey}`, 
+        stateKey)(prefixes)
+
 export const createTaskReducer = stateKey => (state = {
     stateKey,
     meta: {
@@ -200,14 +205,3 @@ export const createCheckAction = ({
         }
     )
 }
-
-const prefixStateKey = (stateKey, ...prefixes) => 
-    reduce((prefix, stateKey) => 
-        `${prefix && prefix.length > 0 ? `${prefix}.` : ``}${stateKey}`, 
-        stateKey)(prefixes)
-    
-export const createCheckForReducer = reducerKeyPrefix => name => stateKeyPrefix => 
-    createCheckReducer(prefixStateKey(name, reducerKeyPrefix, stateKeyPrefix))
-    
-export const createTaskForReducer = reducerKeyPrefix => name => stateKeyPrefix => 
-    createTaskReducer(prefixStateKey(name, reducerKeyPrefix, stateKeyPrefix))
