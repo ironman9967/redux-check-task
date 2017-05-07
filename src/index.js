@@ -1,15 +1,16 @@
 
 import { 
     get as _get,
-    reduce
+    reduce,
+    flatten
 } from 'lodash/fp'
 
 const getActionType = (stateKey, type) => `${stateKey}-${type}`
 
 export const prefixStateKey = (stateKey, ...prefixes) => 
-    reduce((prefix, stateKey) => 
-        `${prefix && prefix.length > 0 ? `${prefix}.` : ``}${stateKey}`, 
-        stateKey)(prefixes)
+    reduce((stateKey, prefix) => 
+        `${prefix && prefix.length > 0 ? `${prefix}.` : ``}${stateKey}`,
+    stateKey)(prefixes)
 
 export const createTaskReducer = stateKey => (state = {
     stateKey,

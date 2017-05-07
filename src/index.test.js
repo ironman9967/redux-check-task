@@ -9,8 +9,7 @@ import {
     createCheckReducer,
     createTaskAction,
     createCheckAction,
-    createCheckForReducer,
-    createTaskForReducer
+    prefixStateKey
 } from './index'
 
 describe('test', () => {
@@ -137,5 +136,11 @@ describe('test', () => {
             }
         } = getState()
         expect(aCheck).to.be.an.object
+    })
+    it('should prefix state keys', () => {
+        expect(prefixStateKey('asdf')).to.be.equal('asdf')
+        expect(prefixStateKey('asdf', void 0)).to.be.equal('asdf')
+        expect(prefixStateKey('asdf', 'qwer')).to.be.equal('qwer.asdf')
+        expect(prefixStateKey('asdf', 'qwer', 'zxcv')).to.be.equal('zxcv.qwer.asdf')
     })
 })
